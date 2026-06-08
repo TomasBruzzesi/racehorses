@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS horses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    base_speed DOUBLE NOT NULL,
+    stamina DOUBLE NOT NULL,
+    horse_type VARCHAR(20) NOT NULL,
+    type_value DOUBLE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS players (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    score INT NOT NULL DEFAULT 0,
+    selected_horse_id INT NULL
+);
