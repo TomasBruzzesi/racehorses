@@ -5,10 +5,7 @@ import java.util.List;
 
 import schemas.Race;
 
-/**
- * Acceso a datos de carreras finalizadas en memoria.
- * No persiste historial en SQL; solo mantiene las carreras de la sesion actual.
- */
+//Acceso a datos de carreras finalizadas en memoria.
 public class RaceDAO {
 
     private final List<Race> completedRaces;
@@ -17,11 +14,7 @@ public class RaceDAO {
         this.completedRaces = new ArrayList<>();
     }
 
-    /**
-     * Registra una carrera finalizada en memoria.
-     *
-     * @param race carrera completada
-     */
+    //Método para registrar una carrera finalizada en memoria.
     public void insert(Race race) {
         if (race != null) {
             completedRaces.add(race);

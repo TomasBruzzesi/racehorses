@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Representa una carrera entre varios caballos sobre una pista.
- */
+//Representa una carrera entre varios caballos sobre una pista.
 public class Race {
 
     private List<Horse> horses;
@@ -16,25 +14,18 @@ public class Race {
     private int currentTick;
     private final Map<Horse, Integer> finishTicks = new HashMap<>();
 
-    /**
-     * Constructor por defecto.
-     */
+    //Constructor por defecto.
     public Race() {
         this.horses = new ArrayList<>();
     }
 
-    /**
-     * @param horses caballos que participan en la carrera
-     * @param track  pista sobre la que se corre
-     */
+    //Constructor con todos los campos.
     public Race(List<Horse> horses, Track track) {
         this.horses = horses != null ? new ArrayList<>(horses) : new ArrayList<>();
         this.track = track;
     }
 
-    /**
-     * Prepara la carrera reseteando el estado de todos los caballos.
-     */
+    //Método para preparar la carrera reseteando el estado de todos los caballos.
     public void start() {
         if (horses == null) {
             horses = new ArrayList<>();
@@ -47,9 +38,7 @@ public class Race {
         started = true;
     }
 
-    /**
-     * Avanza un instante de la carrera para cada caballo que aun no cruzo la meta.
-     */
+    //Método para avanzar un instante de la carrera para cada caballo que aun no cruzo la meta.
     public void tick() {
         if (!started || isFinished() || track == null || horses == null) {
             return;
@@ -70,9 +59,7 @@ public class Race {
         }
     }
 
-    /**
-     * @return el caballo que cruzo la meta primero
-     */
+    //Método para obtener el caballo que cruzo la meta primero.
     public Horse getWinner() {
         if (horses == null || horses.isEmpty()) {
             return null;
@@ -99,10 +86,7 @@ public class Race {
         return winner;
     }
 
-    /**
-     * @param h caballo del cual se quiere conocer la posicion
-     * @return posicion en la carrera (1 = primero), o -1 si no participa
-     */
+    //Método para obtener la posicion en la carrera del caballo.
     public int getPosition(Horse h) {
         if (h == null || horses == null || !horses.contains(h)) {
             return -1;
@@ -129,9 +113,7 @@ public class Race {
         return position;
     }
 
-    /**
-     * @return true si todos los caballos alcanzaron la meta
-     */
+    //Método para verificar si todos los caballos alcanzaron la meta.
     public boolean isFinished() {
         if (track == null || horses == null || horses.isEmpty()) {
             return false;
@@ -144,22 +126,27 @@ public class Race {
         return true;
     }
 
+    //Método para obtener los caballos que participan en la carrera.
     public List<Horse> getHorses() {
         return horses;
     }
 
+    //Método para establecer los caballos que participan en la carrera.
     public void setHorses(List<Horse> horses) {
         this.horses = horses != null ? new ArrayList<>(horses) : new ArrayList<>();
     }
 
+    //Método para obtener la pista sobre la que se corre la carrera.
     public Track getTrack() {
         return track;
     }
 
+    //Método para establecer la pista sobre la que se corre la carrera.
     public void setTrack(Track track) {
         this.track = track;
     }
 
+    //Método para verificar si la carrera ha comenzado.
     public boolean isStarted() {
         return started;
     }

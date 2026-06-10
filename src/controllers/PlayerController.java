@@ -7,10 +7,7 @@ import schemas.Horse;
 import schemas.Player;
 import system.RaceSystem;
 
-/**
- * Controlador responsable de la gestion de jugadores del sistema.
- * Convierte entre el dominio (Player) y los DTOs de transferencia.
- */
+//Controlador responsable de la gestion de jugadores del sistema.
 public class PlayerController {
 
     private static final int WINNER_POINTS = 100;
@@ -21,30 +18,22 @@ public class PlayerController {
     private PlayerDAO playerDAO;
     private Player currentPlayer;
 
-    /**
-     * Constructor por defecto. Obtiene la instancia central del sistema.
-     */
+    //Constructor por defecto. Obtiene la instancia central del sistema.
     public PlayerController() {
         this(RaceSystem.getInstance());
     }
 
-    /**
-     * @param raceSystem instancia del sistema de carreras
-     */
+    //Método para obtener la instancia del sistema de carreras
     public PlayerController(RaceSystem raceSystem) {
         this.raceSystem = raceSystem;
         this.playerDAO = new PlayerDAO();
     }
 
-    /**
-     * Inicia sesion o registra un jugador segun el e-mail recibido.
-     * Si el e-mail ya existe devuelve sus datos.
-     * Si no existe y el nombre viene vacio devuelve null para que la UI pida el nombre.
-     * Si no existe y trae nombre lo registra en la base.
-     *
-     * @param dto datos del jugador (e-mail obligatorio, nombre solo para registro)
-     * @return DTO del jugador o null si falta el nombre para un e-mail nuevo
-     */
+    //Método para iniciar sesión o registrar un jugador segun el e-mail recibido.
+    //Si el e-mail ya existe devuelve sus datos.
+    //Si no existe y el nombre viene vacio devuelve null para que la UI pida el nombre.
+    //Si no existe y trae nombre lo registra en la base.
+    //Método para crear un jugador segun el DTO recibido
     public PlayerDTO createPlayer(PlayerDTO dto) {
         if (dto == null || dto.getEmail() == null || dto.getEmail().isBlank()) {
             return null;
@@ -70,11 +59,7 @@ public class PlayerController {
         return toDTO(currentPlayer);
     }
 
-    /**
-     * Asigna un caballo al jugador activo usando la informacion del DTO.
-     *
-     * @param dto DTO con el nombre del caballo seleccionado
-     */
+    //Método para asignar un caballo al jugador activo usando la informacion del DTO.
     public void selectHorse(HorseDTO dto) {
         if (currentPlayer == null || dto == null || dto.getName() == null) {
             return;
@@ -93,11 +78,7 @@ public class PlayerController {
         }
     }
 
-    /**
-     * Suma puntos al jugador activo segun su posicion en la carrera.
-     *
-     * @param position posicion final del jugador (1 = ganador)
-     */
+    //Método para sumar puntos al jugador activo segun su posicion en la carrera.
     public void addScore(int position) {
         if (currentPlayer == null) {
             return;
@@ -110,9 +91,7 @@ public class PlayerController {
         }
     }
 
-    /**
-     * @return DTO del jugador activo
-     */
+    //Método para obtener el DTO del jugador activo
     public PlayerDTO getPlayerDTO() {
         if (currentPlayer == null) {
             return null;
@@ -120,6 +99,7 @@ public class PlayerController {
         return toDTO(currentPlayer);
     }
 
+    //Método para resolver el caballo seleccionado por el jugador
     private void resolveSelectedHorse(Player player) {
         Integer horseId = player.getSelectedHorseId();
         if (horseId == null) {
@@ -134,6 +114,7 @@ public class PlayerController {
         }
     }
 
+    //Método para sincronizar el jugador en el sistema
     private void syncPlayerInSystem(Player player) {
         for (Player existing : raceSystem.getPlayers()) {
             if (existing.getId() == player.getId()) {
@@ -143,12 +124,7 @@ public class PlayerController {
         raceSystem.getPlayers().add(player);
     }
 
-    /**
-     * Busca un caballo por nombre dentro del sistema.
-     *
-     * @param name nombre del caballo
-     * @return caballo encontrado o null
-     */
+    //Método para buscar un caballo por nombre dentro del sistema
     private Horse findHorseByName(String name) {
         if (name == null || name.isBlank()) {
             return null;
@@ -161,12 +137,7 @@ public class PlayerController {
         return null;
     }
 
-    /**
-     * Calcula los puntos segun la posicion en la carrera.
-     *
-     * @param position posicion final del jugador
-     * @return puntos a otorgar
-     */
+    //Método para calcular los puntos segun la posicion en la carrera
     private int calculatePoints(int position) {
         if (position == 1) {
             return WINNER_POINTS;
@@ -177,12 +148,7 @@ public class PlayerController {
         return PARTICIPATION_POINTS;
     }
 
-    /**
-     * Convierte un jugador del dominio a su representacion DTO.
-     *
-     * @param player jugador del dominio
-     * @return DTO con los datos del jugador
-     */
+    //Método para convertir un jugador del dominio a su representacion DTO
     private PlayerDTO toDTO(Player player) {
         String selectedHorseName = null;
         if (player.getSelectedHorse() != null) {

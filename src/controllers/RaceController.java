@@ -11,10 +11,7 @@ import schemas.Race;
 import schemas.Track;
 import system.RaceSystem;
 
-/**
- * Controlador responsable de la gestion de carreras del sistema.
- * Orquesta el dominio (Race) y expone resultados mediante DTOs.
- */
+//Controlador responsable de la gestion de carreras del sistema.
 public class RaceController {
 
     public static final double DEFAULT_TRACK_DISTANCE = 600.0;
@@ -26,25 +23,17 @@ public class RaceController {
     private RaceSystem raceSystem;
     private Race currentRace;
 
-    /**
-     * Constructor por defecto. Obtiene la instancia central del sistema.
-     */
+    //Constructor por defecto. Obtiene la instancia central del sistema.
     public RaceController() {
         this.raceSystem = RaceSystem.getInstance();
     }
 
-    /**
-     * @param raceSystem instancia del sistema de carreras
-     */
+    //Método para obtener la instancia del sistema de carreras
     public RaceController(RaceSystem raceSystem) {
         this.raceSystem = raceSystem;
     }
 
-    /**
-     * Crea e inicia una nueva carrera con los caballos participantes indicados.
-     *
-     * @param participants caballos que corren (maximo 4)
-     */
+    //Método para crear e iniciar una nueva carrera con los caballos participantes indicados.
     public void startRace(List<Horse> participants) {
         if (participants == null || participants.isEmpty()) {
             return;
@@ -60,11 +49,7 @@ public class RaceController {
         currentRace.start();
     }
 
-    /**
-     * Avanza un instante de la carrera y devuelve el estado de los caballos.
-     *
-     * @return lista de caballos expresados como DTO
-     */
+    //Método para avanzar un instante de la carrera y devolver el estado de los caballos.
     public List<HorseDTO> tick() {
         if (currentRace == null) {
             return new ArrayList<>();
@@ -74,23 +59,17 @@ public class RaceController {
         return toDTOList(currentRace.getHorses());
     }
 
-    /**
-     * @return true si la carrera actual finalizo
-     */
+    //Método para verificar si la carrera actual ha finalizado.
     public boolean isFinished() {
         return currentRace != null && currentRace.isFinished();
     }
 
-    /**
-     * @return carrera actual en curso
-     */
+    //Método para obtener la carrera actual en curso.
     public Race getCurrentRace() {
         return currentRace;
     }
 
-    /**
-     * @return resultado de la carrera actual expresado como DTO
-     */
+    //Método para obtener el resultado de la carrera actual expresado como DTO.
     public RaceResultDTO getResult() {
         if (currentRace == null) {
             return null;
@@ -111,9 +90,7 @@ public class RaceController {
         return new RaceResultDTO(winnerName, playerPosition, pointsEarned);
     }
 
-    /**
-     * @return jugador activo del sistema (ultimo registrado)
-     */
+    //Método para obtener el jugador activo del sistema (ultimo registrado)
     private Player getActivePlayer() {
         List<Player> players = raceSystem.getPlayers();
         if (players.isEmpty()) {
@@ -122,12 +99,7 @@ public class RaceController {
         return players.get(players.size() - 1);
     }
 
-    /**
-     * Calcula los puntos segun la posicion en la carrera.
-     *
-     * @param position posicion final del jugador
-     * @return puntos obtenidos
-     */
+    //Método para calcular los puntos segun la posicion en la carrera.
     private int calculatePoints(int position) {
         if (position == 1) {
             return WINNER_POINTS;
@@ -138,12 +110,7 @@ public class RaceController {
         return PARTICIPATION_POINTS;
     }
 
-    /**
-     * Convierte una lista de caballos del dominio a DTOs.
-     *
-     * @param horses caballos del dominio
-     * @return lista de DTOs
-     */
+    //Método para convertir una lista de caballos del dominio a DTOs.
     private List<HorseDTO> toDTOList(List<Horse> horses) {
         List<HorseDTO> dtos = new ArrayList<>();
         for (Horse horse : horses) {
@@ -152,12 +119,7 @@ public class RaceController {
         return dtos;
     }
 
-    /**
-     * Convierte un caballo del dominio a su representacion DTO.
-     *
-     * @param horse caballo del dominio
-     * @return DTO con los datos del caballo
-     */
+    //Método para convertir un caballo del dominio a su representacion DTO.
     private HorseDTO toDTO(Horse horse) {
         return new HorseDTO(
                 horse.getName(),

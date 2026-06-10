@@ -2,21 +2,22 @@ package horses;
 
 import schemas.Horse;
 
-/**
- * Caballo de velocidad: fuerte al inicio, el sprint se desvanece de forma gradual.
- */
+//Caballo de velocidad: fuerte al inicio, el sprint se desvanece de forma gradual.
 public class FastHorse extends Horse {
 
     private double speedBoost;
 
+    //Constructor por defecto.
     public FastHorse() {
     }
 
+    //Constructor con todos los campos.
     public FastHorse(String name, double baseSpeed, double stamina, double speedBoost) {
         super(name, baseSpeed, stamina);
         this.speedBoost = speedBoost;
     }
 
+    //Método para avanzar el caballo.
     @Override
     public void advance() {
         double energyRatio = getEnergyRatio();
@@ -30,6 +31,7 @@ public class FastHorse extends Horse {
         addDistance(effectiveSpeed);
     }
 
+    //Método para depletar la energia del caballo.
     @Override
     public void depleteEnergy() {
         double energyRatio = getEnergyRatio();
@@ -38,10 +40,12 @@ public class FastHorse extends Horse {
         setEnergy(getEnergy() - proportionalDrain(drainRate));
     }
 
+    //Método para obtener el bonus de velocidad del caballo.
     public double getSpeedBoost() {
         return speedBoost;
     }
 
+    //Método para establecer el bonus de velocidad del caballo.
     public void setSpeedBoost(double speedBoost) {
         this.speedBoost = speedBoost;
     }

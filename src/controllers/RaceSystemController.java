@@ -13,10 +13,7 @@ import schemas.Horse;
 import schemas.Race;
 import system.RaceSystem;
 
-/**
- * Controlador principal que orquesta los demas controladores del sistema.
- * Punto de entrada entre la interfaz y la logica de negocio.
- */
+//Controlador principal que orquesta los demas controladores del sistema.
 public class RaceSystemController {
 
     private PlayerController playerCtrl;
@@ -24,15 +21,11 @@ public class RaceSystemController {
     private RaceController raceCtrl;
     private RaceDAO raceDAO;
 
-    /**
-     * Constructor por defecto.
-     */
+    //Constructor por defecto.
     public RaceSystemController() {
     }
 
-    /**
-     * Inicializa el sistema, los controladores y los caballos por defecto.
-     */
+    //Método para inicializar el sistema, los controladores y los caballos por defecto.
     public void initSystem() {
         RaceSystem raceSystem = RaceSystem.getInstance();
         playerCtrl = new PlayerController(raceSystem);
@@ -42,38 +35,23 @@ public class RaceSystemController {
         loadHorses(raceSystem);
     }
 
-    /**
-     * Inicia sesion o registra un jugador segun el e-mail.
-     * Si el e-mail ya existe devuelve sus datos.
-     * Si no existe y falta el nombre devuelve null para que la UI lo solicite.
-     *
-     * @param dto datos del jugador
-     * @return DTO del jugador o null si el e-mail es nuevo y falta el nombre
-     */
+    //Método para iniciar sesión o registrar un jugador segun el e-mail.
     public PlayerDTO registerPlayer(PlayerDTO dto) {
         return playerCtrl.createPlayer(dto);
     }
 
-    /**
-     * Inicia una nueva carrera con el caballo del jugador y hasta 3 rivales.
-     */
+    //Método para iniciar una nueva carrera con el caballo del jugador y hasta 3 rivales.
     public void launchRace() {
         horseCtrl.resetHorses();
         raceCtrl.startRace(buildRaceParticipants());
     }
 
-    /**
-     * @return distancia total de la pista en metros
-     */
+    //Método para obtener la distancia total de la pista en metros
     public double getRaceTrackDistance() {
         return RaceController.DEFAULT_TRACK_DISTANCE;
     }
 
-    /**
-     * Finaliza la carrera actual, asigna puntaje y devuelve el resultado.
-     *
-     * @return resultado de la carrera
-     */
+    //Método para finalizar la carrera actual, asignar puntaje y devolver el resultado.
     public RaceResultDTO finishRace() {
         RaceResultDTO result = raceCtrl.getResult();
         if (result == null) {
@@ -90,9 +68,7 @@ public class RaceSystemController {
         return result;
     }
 
-    /**
-     * @return puntaje acumulado del jugador activo
-     */
+    //Método para obtener el puntaje acumulado del jugador activo
     public int getPlayerScore() {
         PlayerDTO playerDTO = playerCtrl.getPlayerDTO();
         if (playerDTO == null) {
@@ -101,17 +77,12 @@ public class RaceSystemController {
         return playerDTO.getScore();
     }
 
-    /**
-     * @return lista de caballos disponibles expresados como DTO
-     */
+    //Método para obtener la lista de caballos disponibles expresados como DTO
     public List<HorseDTO> getAvailableHorses() {
         return horseCtrl.getHorseDTOs();
     }
 
-    /**
-     * @param playerId  identificador del jugador (reservado para uso futuro)
-     * @param horseName nombre del caballo a seleccionar
-     */
+    //Método para seleccionar un caballo para el jugador activo
     public void selectHorse(String playerId, String horseName) {
         Horse horse = horseCtrl.getHorseByName(horseName);
         if (horse == null) {
@@ -128,27 +99,17 @@ public class RaceSystemController {
         playerCtrl.selectHorse(horseDTO);
     }
 
-    /**
-     * Avanza un instante de la carrera en curso.
-     *
-     * @return estado actual de los caballos
-     */
+    //Método para avanzar un instante de la carrera en curso.
     public List<HorseDTO> tickRace() {
         return raceCtrl.tick();
     }
 
-    /**
-     * @return true si la carrera actual finalizo
-     */
+    //Método para verificar si la carrera actual ha finalizado.
     public boolean isRaceFinished() {
         return raceCtrl.isFinished();
     }
 
-    /**
-     * Carga el catalogo de caballos desde la base de datos.
-     *
-     * @param raceSystem instancia central del sistema
-     */
+    //Método para cargar el catalogo de caballos desde la base de datos.
     private List<Horse> buildRaceParticipants() {
         List<Horse> participants = new ArrayList<>();
         PlayerDTO player = playerCtrl.getPlayerDTO();
@@ -178,6 +139,7 @@ public class RaceSystemController {
         return participants;
     }
 
+    //Método para cargar el catalogo de caballos desde la base de datos.
     private void loadHorses(RaceSystem raceSystem) {
         HorseDAO horseDAO = new HorseDAO();
         horseDAO.seedDefaultsIfEmpty();

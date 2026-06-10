@@ -11,9 +11,7 @@ import java.util.List;
 import config.DBConnection;
 import schemas.Player;
 
-/**
- * Acceso a datos de jugadores en MySQL.
- */
+//Acceso a datos de jugadores en MySQL.
 public class PlayerDAO {
 
     private final DBConnection dbConnection;
@@ -23,9 +21,7 @@ public class PlayerDAO {
         createTableIfNotExists();
     }
 
-    /**
-     * Crea la tabla de jugadores si aun no existe.
-     */
+    //Método para crear la tabla de jugadores si aun no existe.
     public void createTableIfNotExists() {
         String sql = """
                 CREATE TABLE IF NOT EXISTS players (
@@ -45,12 +41,7 @@ public class PlayerDAO {
         }
     }
 
-    /**
-     * Inserta un jugador y asigna el id generado.
-     *
-     * @param player jugador a persistir
-     * @return id generado
-     */
+    //Método para insertar un jugador y asigna el id generado.
     public int insert(Player player) {
         String sql = "INSERT INTO players (name, email, score, selected_horse_id) VALUES (?, ?, ?, ?)";
 
@@ -77,12 +68,7 @@ public class PlayerDAO {
         }
     }
 
-    /**
-     * Actualiza el puntaje de un jugador.
-     *
-     * @param playerId identificador del jugador
-     * @param score    nuevo puntaje
-     */
+    //Método para actualizar el puntaje de un jugador.
     public void updateScore(int playerId, int score) {
         String sql = "UPDATE players SET score = ? WHERE id = ?";
 
@@ -97,12 +83,7 @@ public class PlayerDAO {
         }
     }
 
-    /**
-     * Asigna el caballo seleccionado de un jugador.
-     *
-     * @param playerId identificador del jugador
-     * @param horseId  identificador del caballo seleccionado
-     */
+    //Método para asignar el caballo seleccionado de un jugador.
     public void updateSelectedHorse(int playerId, int horseId) {
         String sql = "UPDATE players SET selected_horse_id = ? WHERE id = ?";
 
@@ -117,33 +98,7 @@ public class PlayerDAO {
         }
     }
 
-    /**
-     * @param id identificador del jugador
-     * @return jugador encontrado o null
-     */
-    public Player findById(int id) {
-        String sql = "SELECT id, name, email, score, selected_horse_id FROM players WHERE id = ?";
-
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar jugador por id.", e);
-        }
-    }
-
-    /**
-     * @param email correo del jugador
-     * @return jugador encontrado o null
-     */
+    //Método para buscar un jugador por su email.
     public Player findByEmail(String email) {
         String sql = "SELECT id, name, email, score, selected_horse_id FROM players WHERE email = ?";
 
@@ -163,26 +118,7 @@ public class PlayerDAO {
         }
     }
 
-    /**
-     * @return todos los jugadores registrados
-     */
-    public List<Player> findAll() {
-        String sql = "SELECT id, name, email, score, selected_horse_id FROM players";
-        List<Player> players = new ArrayList<>();
-
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                players.add(mapRow(rs));
-            }
-            return players;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al listar jugadores.", e);
-        }
-    }
-
+    //Método para convertir un ResultSet a un objeto Player.
     private Player mapRow(ResultSet rs) throws SQLException {
         Player player = new Player();
         player.setId(rs.getInt("id"));
@@ -197,10 +133,12 @@ public class PlayerDAO {
         return player;
     }
 
+    //Método para obtener el id del caballo seleccionado de un jugador.
     private Integer getSelectedHorseId(Player player) {
         return player.getSelectedHorseId();
     }
 
+    //Método para establecer un valor nullable en un PreparedStatement.
     private void setNullableInt(PreparedStatement stmt, int index, Integer value) throws SQLException {
         if (value == null) {
             stmt.setNull(index, java.sql.Types.INTEGER);

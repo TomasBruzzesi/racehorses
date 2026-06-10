@@ -7,11 +7,14 @@ import java.sql.SQLException;
 public class DBConnection {
 
     private static DBConnection instance;
-
+    //URL de conexión a la DB
     private static final String URL = "jdbc:mysql://localhost:3306/horseRace?createDatabaseIfNotExist=true&serverTimezone=UTC";
+    //Usuario de la DB
     private static final String USER = "root";
+    //Contraseña de la DB
     private static final String PASSWORD = "root";
 
+    //Constructor de la clase DBConnection
     private DBConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -20,6 +23,7 @@ public class DBConnection {
         }
     }
 
+    //Método para obtener la instancia de la clase DBConnection
     public static DBConnection getInstance() {
         if (instance == null) {
             instance = new DBConnection();
@@ -27,6 +31,7 @@ public class DBConnection {
         return instance;
     }
 
+    //Método para obtener la conexión a la DB
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }

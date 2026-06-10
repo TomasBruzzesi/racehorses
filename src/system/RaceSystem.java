@@ -6,9 +6,7 @@ import java.util.List;
 import schemas.Horse;
 import schemas.Player;
 
-/**
- * Singleton que centraliza el estado del sistema de carreras.
- */
+//Singleton que centraliza el estado del sistema de carreras.
 
 public class RaceSystem {
 
@@ -22,9 +20,7 @@ public class RaceSystem {
         this.horses = new ArrayList<>();
     }
 
-    /**
-     * @return instancia unica del sistema de carreras
-     */
+    //Método para obtener la instancia unica del sistema de carreras
     public static RaceSystem getInstance() {
         if (instance == null) {
             instance = new RaceSystem();
@@ -32,10 +28,12 @@ public class RaceSystem {
         return instance;
     }
 
+    //Método para obtener los jugadores que participan en la carrera.
     public List<Player> getPlayers() {
         return players;
     }
 
+    //Método para obtener los caballos que participan en la carrera.
     public List<Horse> getHorses() {
         return horses;
     }

@@ -14,9 +14,7 @@ import horses.EnduranceHorse;
 import horses.FastHorse;
 import schemas.Horse;
 
-/**
- * Acceso a datos de caballos en MySQL.
- */
+//Acceso a datos de caballos en MySQL.
 public class HorseDAO {
 
     private static final String TYPE_FAST = "FAST";
@@ -25,14 +23,13 @@ public class HorseDAO {
 
     private final DBConnection dbConnection;
 
+    //Constructor por defecto. Obtiene la instancia central de la conexion a la DB.
     public HorseDAO() {
         this.dbConnection = DBConnection.getInstance();
         createTableIfNotExists();
     }
 
-    /**
-     * Crea la tabla de caballos si aun no existe.
-     */
+    //Método para crear la tabla de caballos si aun no existe.
     public void createTableIfNotExists() {
         String sql = """
                 CREATE TABLE IF NOT EXISTS horses (
@@ -53,12 +50,7 @@ public class HorseDAO {
         }
     }
 
-    /**
-     * Inserta un caballo y asigna el id generado.
-     *
-     * @param horse caballo a persistir
-     * @return id generado
-     */
+    //Método para insertar un caballo y asigna el id generado.
     public int insert(Horse horse) {
         String sql = """
                 INSERT INTO horses (name, base_speed, stamina, horse_type, type_value)
@@ -92,9 +84,7 @@ public class HorseDAO {
         }
     }
 
-    /**
-     * Carga los caballos iniciales si la tabla esta vacia.
-     */
+    //Método para cargar los caballos iniciales si la tabla esta vacia.
     public void seedDefaultsIfEmpty() {
         if (!findAll().isEmpty()) {
             return;
@@ -106,64 +96,8 @@ public class HorseDAO {
         insert(new FastHorse("Bolt", 5.45, 75.0, 0.35));
         insert(new BalancedHorse("Mistral", 4.3, 95.0, 1.1));
     }
-
-    /**
-     * @param id identificador del caballo
-     * @return caballo encontrado o null
-     */
-    public Horse findById(int id) {
-        String sql = """
-                SELECT id, name, base_speed, stamina, horse_type, type_value
-                FROM horses
-                WHERE id = ?
-                """;
-
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar caballo por id.", e);
-        }
-    }
-
-    /**
-     * @param name nombre del caballo
-     * @return caballo encontrado o null
-     */
-    public Horse findByName(String name) {
-        String sql = """
-                SELECT id, name, base_speed, stamina, horse_type, type_value
-                FROM horses
-                WHERE name = ?
-                """;
-
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, name);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapRow(rs);
-                }
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al buscar caballo por nombre.", e);
-        }
-    }
-
-    /**
-     * @return todos los caballos del catalogo
-     */
+    
+    //Método para obtener todos los caballos del catalogo.
     public List<Horse> findAll() {
         String sql = """
                 SELECT id, name, base_speed, stamina, horse_type, type_value
@@ -185,6 +119,7 @@ public class HorseDAO {
         }
     }
 
+    //Método para convertir un ResultSet a un objeto Horse.
     private Horse mapRow(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("name");
@@ -198,6 +133,7 @@ public class HorseDAO {
         return horse;
     }
 
+    //Método para crear un objeto Horse segun el tipo de caballo.
     private Horse createHorse(String horseType, String name, double baseSpeed, double stamina, double typeValue) {
         if (TYPE_FAST.equals(horseType)) {
             return new FastHorse(name, baseSpeed, stamina, typeValue);
@@ -211,6 +147,7 @@ public class HorseDAO {
         throw new RuntimeException("Tipo de caballo no soportado: " + horseType);
     }
 
+    //Método para obtener el tipo de caballo.
     private String resolveHorseType(Horse horse) {
         if (horse instanceof FastHorse) {
             return TYPE_FAST;
@@ -224,6 +161,7 @@ public class HorseDAO {
         throw new RuntimeException("No se puede persistir un caballo sin subtipo definido.");
     }
 
+    //Método para obtener el valor del tipo de caballo.
     private double resolveTypeValue(Horse horse) {
         if (horse instanceof FastHorse) {
             return ((FastHorse) horse).getSpeedBoost();
