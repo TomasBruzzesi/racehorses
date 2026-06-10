@@ -321,7 +321,7 @@
 											"top": 723,
 											"width": 238.298828125,
 											"height": 12,
-											"text": "+selectHorse(playerId, horseName): void",
+											"text": "+selectHorse(horseName): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -7729,17 +7729,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGeo/osqF/VKe0="
 									},
-									"name": "playerId",
-									"type": ""
-								},
-								{
-									"_type": "UMLParameter",
-									"_id": "AAAAAAGeo/oyOmC1H38=",
-									"_parent": {
-										"$ref": "AAAAAAGeo/osqF/VKe0="
-									},
-									"name": "horseName",
-									"type": ""
+									"name": "horseName"
 								},
 								{
 									"_type": "UMLParameter",
@@ -11937,7 +11927,7 @@
 											"top": 752,
 											"width": 216,
 											"height": 36,
-											"text": "selectHorse (playerId, horseName)",
+											"text": "selectHorse (horseName)",
 											"horzAlign": 2
 										},
 										{
@@ -12992,7 +12982,7 @@
 														"$ref": "AAAAAAGeqiOQ1HvgdnI="
 													},
 													"edgePosition": 1,
-													"text": "17 : selectHorse(playerId, horseName):void"
+													"text": "17 : selectHorse(horseName):void"
 												},
 												{
 													"_type": "EdgeLabelView",

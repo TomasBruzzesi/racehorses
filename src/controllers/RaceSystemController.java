@@ -83,7 +83,7 @@ public class RaceSystemController {
     }
 
     //Método para seleccionar un caballo para el jugador activo
-    public void selectHorse(String playerId, String horseName) {
+    public void selectHorse(String horseName) {
         Horse horse = horseCtrl.getHorseByName(horseName);
         if (horse == null) {
             return;
