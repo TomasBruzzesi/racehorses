@@ -81,7 +81,6 @@ public class RaceController {
         return currentRace != null && currentRace.isFinished();
     }
 
-    //TODO: Averiguar si es necesario
     /**
      * @return carrera actual en curso
      */
