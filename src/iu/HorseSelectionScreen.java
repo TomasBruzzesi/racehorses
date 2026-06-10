@@ -148,7 +148,7 @@ public class HorseSelectionScreen extends JFrame {
         }
 
         HorseDTO selectedHorse = horses.get(index);
-        controller.selectHorse(selectedHorse.getName());
+        controller.selectHorse(player.getId(), selectedHorse.getName());
         player.setSelectedHorseName(selectedHorse.getName());
 
         setVisible(false);
