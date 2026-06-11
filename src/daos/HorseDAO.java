@@ -90,7 +90,7 @@ public class HorseDAO {
             return;
         }
 
-        insert(new FastHorse("Thunder", 5.45, 80.0, 0.4));
+        insert(new FastHorse("Thunder", 5.45, 80.0, 0.36));
         insert(new BalancedHorse("Storm", 4.6, 90.0, 1.0));
         insert(new EnduranceHorse("Blaze", 3.95, 100.0, 0.5));
         insert(new FastHorse("Bolt", 5.45, 75.0, 0.35));
