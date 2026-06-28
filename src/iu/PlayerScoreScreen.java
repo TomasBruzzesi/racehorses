@@ -16,23 +16,22 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import controllers.RaceSystemController;
+import controllers.PlayerController;
 import dtos.PlayerDTO;
 
 /**
  * Pantalla de puntaje del jugador logueado.
- * Solo utiliza RaceSystemController.
  */
 public class PlayerScoreScreen extends JFrame {
 
     private final Runnable onBack;
 
-    public PlayerScoreScreen(RaceSystemController controller, PlayerDTO player, Runnable onBack) {
+    public PlayerScoreScreen(PlayerDTO player, Runnable onBack) {
         this.onBack = onBack;
-        buildUi(controller, player);
+        buildUi(player);
     }
 
-    private void buildUi(RaceSystemController controller, PlayerDTO player) {
+    private void buildUi(PlayerDTO player) {
         setTitle("Carrera de Caballos - Puntaje");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -66,7 +65,7 @@ public class PlayerScoreScreen extends JFrame {
 
         gbc.gridy++;
         gbc.insets = new Insets(0, 0, 24, 0);
-        int score = controller.getPlayerScore();
+        int score = PlayerController.getInstance().getPlayerScore();
         JLabel scoreLabel = new JLabel("Puntaje acumulado: " + score, SwingConstants.CENTER);
         scoreLabel.setFont(scoreLabel.getFont().deriveFont(Font.BOLD, 16f));
         content.add(scoreLabel, gbc);

@@ -2,12 +2,12 @@ package iu;
 
 import javax.swing.SwingUtilities;
 
-import controllers.RaceSystemController;
+import controllers.HorseController;
 import dtos.PlayerDTO;
 import dtos.RaceResultDTO;
 
 /**
- * Punto de entrada. La UI solo opera a traves de RaceSystemController.
+ * Punto de entrada. La UI opera a traves de los controllers singleton.
  */
 public class Main {
 
@@ -15,13 +15,10 @@ public class Main {
         SwingUtilities.invokeLater(Main::startApp);
     }
 
-    private static RaceSystemController controller;
-
     private static void startApp() {
-        controller = new RaceSystemController();
-        controller.initSystem();
+        HorseController.getInstance().loadHorses();
 
-        LoginScreen loginScreen = new LoginScreen(controller, Main::openHomeScreen);
+        LoginScreen loginScreen = new LoginScreen(Main::openHomeScreen);
         loginScreen.setVisible(true);
     }
 
@@ -44,13 +41,12 @@ public class Main {
     }
 
     private static void openPlayerScoreScreen(PlayerDTO player, Runnable onBack) {
-        PlayerScoreScreen scoreScreen = new PlayerScoreScreen(controller, player, onBack);
+        PlayerScoreScreen scoreScreen = new PlayerScoreScreen(player, onBack);
         scoreScreen.setVisible(true);
     }
 
     private static void openHorseSelectionScreen(PlayerDTO player, Runnable onBack) {
         HorseSelectionScreen screen = new HorseSelectionScreen(
-                controller,
                 player,
                 onBack,
                 () -> openRaceScreen(player, onBack)
@@ -59,7 +55,7 @@ public class Main {
     }
 
     private static void openRaceScreen(PlayerDTO player, Runnable onBackToMenu) {
-        RaceScreen raceScreen = new RaceScreen(controller, player, (result, totalScore) -> {
+        RaceScreen raceScreen = new RaceScreen(player, (result, totalScore) -> {
             openRaceResultScreen(player, result, totalScore, onBackToMenu);
         });
         raceScreen.setVisible(true);

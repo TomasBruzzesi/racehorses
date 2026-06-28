@@ -19,7 +19,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import controllers.RaceSystemController;
+import controllers.PlayerController;
 import dtos.PlayerDTO;
 
 /**
@@ -27,12 +27,10 @@ import dtos.PlayerDTO;
  */
 public class LoginScreen extends JFrame {
 
-    private final RaceSystemController controller;
     private final LoginListener listener;
     private final JTextField emailField;
 
-    public LoginScreen(RaceSystemController controller, LoginListener listener) {
-        this.controller = controller;
+    public LoginScreen(LoginListener listener) {
         this.listener = listener;
         this.emailField = new JTextField(28);
         buildUi();
@@ -103,7 +101,8 @@ public class LoginScreen extends JFrame {
         PlayerDTO dto = new PlayerDTO();
         dto.setEmail(email);
 
-        PlayerDTO player = controller.registerPlayer(dto);
+        PlayerController playerController = PlayerController.getInstance();
+        PlayerDTO player = playerController.createPlayer(dto);
         if (player != null) {
             goToMainMenu(player);
             return;
@@ -127,7 +126,7 @@ public class LoginScreen extends JFrame {
         }
 
         dto.setName(name);
-        player = controller.registerPlayer(dto);
+        player = playerController.createPlayer(dto);
         if (player != null) {
             goToMainMenu(player);
         }

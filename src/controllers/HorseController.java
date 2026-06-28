@@ -3,31 +3,39 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import daos.HorseDAO;
 import dtos.HorseDTO;
 import schemas.Horse;
-import system.RaceSystem;
 
 //Controlador responsable de la gestion de caballos del sistema.
 public class HorseController {
 
-    private RaceSystem raceSystem;
+    private static HorseController instance;
 
-    //Constructor por defecto. Obtiene la instancia central del sistema.
-    public HorseController() {
-        this.raceSystem = RaceSystem.getInstance();
+    private final List<Horse> horses;
+
+    private HorseController() {
+        this.horses = new ArrayList<>();
     }
 
-    //Método para obtener la instancia del sistema de carreras
-    public HorseController(RaceSystem raceSystem) {
-        this.raceSystem = raceSystem;
+    public static HorseController getInstance() {
+        if (instance == null) {
+            instance = new HorseController();
+        }
+        return instance;
+    }
+
+    //Método para cargar el catalogo de caballos desde la base de datos.
+    public void loadHorses() {
+        HorseDAO horseDAO = new HorseDAO();
+        horseDAO.seedDefaultsIfEmpty();
+        horses.clear();
+        horses.addAll(horseDAO.findAll());
     }
 
     //Método para obtener la lista de caballos disponibles en el sistema
     public List<Horse> getAvailableHorses() {
-        if (raceSystem == null) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(raceSystem.getHorses());
+        return new ArrayList<>(horses);
     }
 
     //Método para obtener la lista de caballos expresados como DTO
@@ -41,7 +49,7 @@ public class HorseController {
 
     //Método para restaurar el estado de todos los caballos para una nueva carrera.
     public void resetHorses() {
-        for (Horse horse : getAvailableHorses()) {
+        for (Horse horse : horses) {
             horse.reset();
         }
     }
@@ -51,7 +59,7 @@ public class HorseController {
         if (name == null || name.isBlank()) {
             return null;
         }
-        for (Horse horse : getAvailableHorses()) {
+        for (Horse horse : horses) {
             if (name.equalsIgnoreCase(horse.getName())) {
                 return horse;
             }

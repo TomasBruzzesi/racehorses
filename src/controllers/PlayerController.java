@@ -1,11 +1,13 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import daos.PlayerDAO;
 import dtos.HorseDTO;
 import dtos.PlayerDTO;
 import schemas.Horse;
 import schemas.Player;
-import system.RaceSystem;
 
 //Controlador responsable de la gestion de jugadores del sistema.
 public class PlayerController {
@@ -14,19 +16,22 @@ public class PlayerController {
     private static final int SECOND_PLACE_POINTS = 50;
     private static final int PARTICIPATION_POINTS = 10;
 
-    private RaceSystem raceSystem;
-    private PlayerDAO playerDAO;
+    private static PlayerController instance;
+
+    private final List<Player> players;
+    private final PlayerDAO playerDAO;
     private Player currentPlayer;
 
-    //Constructor por defecto. Obtiene la instancia central del sistema.
-    public PlayerController() {
-        this(RaceSystem.getInstance());
+    private PlayerController() {
+        this.players = new ArrayList<>();
+        this.playerDAO = new PlayerDAO();
     }
 
-    //Método para obtener la instancia del sistema de carreras
-    public PlayerController(RaceSystem raceSystem) {
-        this.raceSystem = raceSystem;
-        this.playerDAO = new PlayerDAO();
+    public static PlayerController getInstance() {
+        if (instance == null) {
+            instance = new PlayerController();
+        }
+        return instance;
     }
 
     //Método para iniciar sesión o registrar un jugador segun el e-mail recibido.
@@ -54,9 +59,26 @@ public class PlayerController {
 
         Player player = new Player(dto.getName().trim(), email);
         playerDAO.insert(player);
-        raceSystem.getPlayers().add(player);
+        players.add(player);
         currentPlayer = player;
         return toDTO(currentPlayer);
+    }
+
+    //Método para asignar un caballo al jugador activo por nombre.
+    public void selectHorse(String horseName) {
+        Horse horse = HorseController.getInstance().getHorseByName(horseName);
+        if (horse == null) {
+            return;
+        }
+
+        HorseDTO dto = new HorseDTO(
+                horse.getName(),
+                horse.getBaseSpeed(),
+                horse.getStamina(),
+                horse.getEnergy(),
+                horse.getDistanceTraveled()
+        );
+        selectHorse(dto);
     }
 
     //Método para asignar un caballo al jugador activo usando la informacion del DTO.
@@ -99,6 +121,20 @@ public class PlayerController {
         return toDTO(currentPlayer);
     }
 
+    //Método para obtener el puntaje acumulado del jugador activo.
+    public int getPlayerScore() {
+        PlayerDTO dto = getPlayerDTO();
+        if (dto == null) {
+            return 0;
+        }
+        return dto.getScore();
+    }
+
+    //Método para obtener el jugador activo de la sesion actual.
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     //Método para resolver el caballo seleccionado por el jugador
     private void resolveSelectedHorse(Player player) {
         Integer horseId = player.getSelectedHorseId();
@@ -106,7 +142,7 @@ public class PlayerController {
             return;
         }
 
-        for (Horse horse : raceSystem.getHorses()) {
+        for (Horse horse : HorseController.getInstance().getAvailableHorses()) {
             if (horse.getId() == horseId) {
                 player.selectHorse(horse);
                 return;
@@ -116,12 +152,12 @@ public class PlayerController {
 
     //Método para sincronizar el jugador en el sistema
     private void syncPlayerInSystem(Player player) {
-        for (Player existing : raceSystem.getPlayers()) {
+        for (Player existing : players) {
             if (existing.getId() == player.getId()) {
                 return;
             }
         }
-        raceSystem.getPlayers().add(player);
+        players.add(player);
     }
 
     //Método para buscar un caballo por nombre dentro del sistema
@@ -129,7 +165,7 @@ public class PlayerController {
         if (name == null || name.isBlank()) {
             return null;
         }
-        for (Horse horse : raceSystem.getHorses()) {
+        for (Horse horse : HorseController.getInstance().getAvailableHorses()) {
             if (name.equalsIgnoreCase(horse.getName())) {
                 return horse;
             }

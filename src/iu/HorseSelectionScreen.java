@@ -23,17 +23,16 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
-import controllers.RaceSystemController;
+import controllers.HorseController;
+import controllers.PlayerController;
 import dtos.HorseDTO;
 import dtos.PlayerDTO;
 
 /**
  * Pantalla de seleccion de caballo antes de iniciar una carrera.
- * Solo utiliza RaceSystemController.
  */
 public class HorseSelectionScreen extends JFrame {
 
-    private final RaceSystemController controller;
     private final PlayerDTO player;
     private final Runnable onBack;
     private final Runnable onHorseSelected;
@@ -41,16 +40,14 @@ public class HorseSelectionScreen extends JFrame {
     private final JList<String> horseList;
 
     public HorseSelectionScreen(
-            RaceSystemController controller,
             PlayerDTO player,
             Runnable onBack,
             Runnable onHorseSelected
     ) {
-        this.controller = controller;
         this.player = player;
         this.onBack = onBack;
         this.onHorseSelected = onHorseSelected;
-        this.horses = controller.getAvailableHorses();
+        this.horses = HorseController.getInstance().getHorseDTOs();
         this.horseList = new JList<>(buildListModel());
         buildUi();
     }
@@ -148,7 +145,7 @@ public class HorseSelectionScreen extends JFrame {
         }
 
         HorseDTO selectedHorse = horses.get(index);
-        controller.selectHorse(selectedHorse.getName());
+        PlayerController.getInstance().selectHorse(selectedHorse.getName());
         player.setSelectedHorseName(selectedHorse.getName());
 
         setVisible(false);

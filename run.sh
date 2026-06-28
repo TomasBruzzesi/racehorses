@@ -25,7 +25,6 @@ javac -sourcepath "$SRC_DIR" -cp "$JAR" \
     "$SRC_DIR"/schemas/*.java \
     "$SRC_DIR"/horses/*.java \
     "$SRC_DIR"/dtos/*.java \
-    "$SRC_DIR"/system/*.java \
     "$SRC_DIR"/config/*.java \
     "$SRC_DIR"/daos/*.java \
     "$SRC_DIR"/controllers/*.java \

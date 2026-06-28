@@ -21,7 +21,6 @@ import dtos.PlayerDTO;
 
 /**
  * Pantalla de inicio: menu principal del jugador logueado.
- * Solo utiliza RaceSystemController.
  */
 public class HomeScreen extends JFrame {
 

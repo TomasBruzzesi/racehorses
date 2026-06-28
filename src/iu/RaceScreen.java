@@ -12,30 +12,31 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
-import controllers.RaceSystemController;
+import controllers.PlayerController;
+import controllers.RaceController;
 import dtos.PlayerDTO;
 import dtos.RaceResultDTO;
 
 /**
- * Pantalla de carrera en vivo. Solo utiliza RaceSystemController.
+ * Pantalla de carrera en vivo.
  */
 public class RaceScreen extends JFrame {
 
     private static final int TICK_DELAY_MS = 80;
 
-    private final RaceSystemController controller;
     private final PlayerDTO player;
     private final RaceFinishListener listener;
+    private final RaceController raceController;
     private final RaceTrackPanel trackPanel;
     private final JLabel statusLabel;
     private Timer raceTimer;
 
-    public RaceScreen(RaceSystemController controller, PlayerDTO player, RaceFinishListener listener) {
-        this.controller = controller;
+    public RaceScreen(PlayerDTO player, RaceFinishListener listener) {
         this.player = player;
         this.listener = listener;
+        this.raceController = RaceController.getInstance();
         this.trackPanel = new RaceTrackPanel(
-                controller.getRaceTrackDistance(),
+                raceController.getTrackDistance(),
                 player.getSelectedHorseName()
         );
         this.statusLabel = new JLabel("¡La carrera comenzó!", SwingConstants.CENTER);
@@ -72,32 +73,32 @@ public class RaceScreen extends JFrame {
     }
 
     private void startRace() {
-        controller.launchRace();
-        trackPanel.updateHorses(controller.tickRace());
+        raceController.launchRace();
+        trackPanel.updateHorses(raceController.tick());
 
         raceTimer = new Timer(TICK_DELAY_MS, e -> advanceRace());
         raceTimer.start();
     }
 
     private void advanceRace() {
-        if (controller.isRaceFinished()) {
+        if (raceController.isFinished()) {
             raceTimer.stop();
             statusLabel.setText("Carrera finalizada! Todos los caballos cruzaron la meta.");
-            trackPanel.updateHorses(controller.tickRace());
+            trackPanel.updateHorses(raceController.tick());
             finishRace();
             return;
         }
 
-        trackPanel.updateHorses(controller.tickRace());
+        trackPanel.updateHorses(raceController.tick());
     }
 
     private void finishRace() {
-        RaceResultDTO result = controller.finishRace();
+        RaceResultDTO result = raceController.finishRace();
         if (result == null) {
             return;
         }
 
-        int totalScore = controller.getPlayerScore();
+        int totalScore = PlayerController.getInstance().getPlayerScore();
         player.setScore(totalScore);
 
         setVisible(false);

@@ -1,15 +1,17 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import daos.RaceDAO;
 import dtos.HorseDTO;
+import dtos.PlayerDTO;
 import dtos.RaceResultDTO;
 import schemas.Horse;
 import schemas.Player;
 import schemas.Race;
 import schemas.Track;
-import system.RaceSystem;
 
 //Controlador responsable de la gestion de carreras del sistema.
 public class RaceController {
@@ -20,17 +22,26 @@ public class RaceController {
     private static final int SECOND_PLACE_POINTS = 50;
     private static final int PARTICIPATION_POINTS = 10;
 
-    private RaceSystem raceSystem;
+    private static RaceController instance;
+
+    private final RaceDAO raceDAO;
     private Race currentRace;
 
-    //Constructor por defecto. Obtiene la instancia central del sistema.
-    public RaceController() {
-        this.raceSystem = RaceSystem.getInstance();
+    private RaceController() {
+        this.raceDAO = new RaceDAO();
     }
 
-    //Método para obtener la instancia del sistema de carreras
-    public RaceController(RaceSystem raceSystem) {
-        this.raceSystem = raceSystem;
+    public static RaceController getInstance() {
+        if (instance == null) {
+            instance = new RaceController();
+        }
+        return instance;
+    }
+
+    //Método para iniciar una nueva carrera con el caballo del jugador y hasta 3 rivales.
+    public void launchRace() {
+        HorseController.getInstance().resetHorses();
+        startRace(buildRaceParticipants());
     }
 
     //Método para crear e iniciar una nueva carrera con los caballos participantes indicados.
@@ -64,6 +75,27 @@ public class RaceController {
         return currentRace != null && currentRace.isFinished();
     }
 
+    //Método para obtener la distancia total de la pista en metros.
+    public double getTrackDistance() {
+        return DEFAULT_TRACK_DISTANCE;
+    }
+
+    //Método para finalizar la carrera actual, asignar puntaje y devolver el resultado.
+    public RaceResultDTO finishRace() {
+        RaceResultDTO result = getResult();
+        if (result == null) {
+            return null;
+        }
+
+        PlayerController.getInstance().addScore(result.getPlayerPosition());
+
+        if (currentRace != null) {
+            raceDAO.insert(currentRace);
+        }
+
+        return result;
+    }
+
     //Método para obtener la carrera actual en curso.
     public Race getCurrentRace() {
         return currentRace;
@@ -90,13 +122,40 @@ public class RaceController {
         return new RaceResultDTO(winnerName, playerPosition, pointsEarned);
     }
 
-    //Método para obtener el jugador activo del sistema (ultimo registrado)
-    private Player getActivePlayer() {
-        List<Player> players = raceSystem.getPlayers();
-        if (players.isEmpty()) {
-            return null;
+    //Método para armar los participantes de la carrera con el caballo del jugador y rivales aleatorios.
+    private List<Horse> buildRaceParticipants() {
+        List<Horse> participants = new ArrayList<>();
+        HorseController horseCtrl = HorseController.getInstance();
+        PlayerDTO player = PlayerController.getInstance().getPlayerDTO();
+        Horse playerHorse = null;
+
+        if (player != null && player.getSelectedHorseName() != null) {
+            playerHorse = horseCtrl.getHorseByName(player.getSelectedHorseName());
         }
-        return players.get(players.size() - 1);
+
+        if (playerHorse != null) {
+            participants.add(playerHorse);
+        }
+
+        List<Horse> rivals = new ArrayList<>();
+        for (Horse horse : horseCtrl.getAvailableHorses()) {
+            if (playerHorse == null || !horse.getName().equalsIgnoreCase(playerHorse.getName())) {
+                rivals.add(horse);
+            }
+        }
+        Collections.shuffle(rivals);
+
+        int slotsLeft = MAX_RACE_HORSES - participants.size();
+        for (int i = 0; i < Math.min(slotsLeft, rivals.size()); i++) {
+            participants.add(rivals.get(i));
+        }
+
+        return participants;
+    }
+
+    //Método para obtener el jugador activo de la sesion actual.
+    private Player getActivePlayer() {
+        return PlayerController.getInstance().getCurrentPlayer();
     }
 
     //Método para calcular los puntos segun la posicion en la carrera.
