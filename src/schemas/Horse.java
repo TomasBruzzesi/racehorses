@@ -1,19 +1,47 @@
 package schemas;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 //Clase abstracta que representa un caballo en el dominio del sistema.
-//Define los atributos comunes y el comportamiento base de la carrera.
+@Entity
+@Table(name = "horses")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "horse_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Horse {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String name;
+
+    @Column(name = "base_speed", nullable = false)
     private double baseSpeed;
+
+    @Column(nullable = false)
     private double stamina;
+
+    @Transient
     private double energy;
+
+    @Transient
     private double distanceTraveled;
+
+    @Transient
     protected double raceForm;
 
-    //Constructor por defecto.
-    public Horse() {
+    protected Horse() {
     }
 
     //Constructor con todos los campos.

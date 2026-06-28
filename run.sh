@@ -3,14 +3,19 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC_DIR="$ROOT_DIR/src"
+LIB_DIR="$ROOT_DIR/lib"
 MYSQL_DIR="$ROOT_DIR/mysql"
-JAR="$SRC_DIR/mysql-connector-j-9.7.0.jar"
-CP="$SRC_DIR:$JAR"
 
-if [[ ! -f "$JAR" ]]; then
-    echo "Error: no se encontro el driver MySQL en $JAR"
+if [[ ! -d "$LIB_DIR" ]] || [[ -z "$(find "$LIB_DIR" -maxdepth 1 -name '*.jar' -print -quit)" ]]; then
+    echo "Error: no se encontraron dependencias en $LIB_DIR"
+    echo "Ejecuta primero: bash download-libs.sh"
     exit 1
 fi
+
+CP="$SRC_DIR"
+for jar in "$LIB_DIR"/*.jar; do
+    CP="$CP:$jar"
+done
 
 echo "==> Verificando MySQL..."
 if ! docker compose -f "$MYSQL_DIR/docker-compose.yml" ps --status running 2>/dev/null | grep -q mysql; then
@@ -21,7 +26,7 @@ if ! docker compose -f "$MYSQL_DIR/docker-compose.yml" ps --status running 2>/de
 fi
 
 echo "==> Compilando..."
-javac -sourcepath "$SRC_DIR" -cp "$JAR" \
+javac -sourcepath "$SRC_DIR" -cp "$CP" \
     "$SRC_DIR"/schemas/*.java \
     "$SRC_DIR"/horses/*.java \
     "$SRC_DIR"/dtos/*.java \

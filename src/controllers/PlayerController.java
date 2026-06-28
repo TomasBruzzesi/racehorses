@@ -93,7 +93,6 @@ public class PlayerController {
         }
 
         currentPlayer.selectHorse(horse);
-        currentPlayer.setSelectedHorseId(horse.getId());
 
         if (currentPlayer.getId() > 0 && horse.getId() > 0) {
             playerDAO.updateSelectedHorse(currentPlayer.getId(), horse.getId());
@@ -109,7 +108,7 @@ public class PlayerController {
         currentPlayer.addScore(calculatePoints(position));
 
         if (currentPlayer.getId() > 0) {
-            playerDAO.updateScore(currentPlayer.getId(), currentPlayer.getScore());
+            playerDAO.update(currentPlayer);
         }
     }
 

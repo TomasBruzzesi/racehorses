@@ -1,10 +1,16 @@
 package horses;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import schemas.Horse;
 
 //Caballo de velocidad: fuerte al inicio, el sprint se desvanece de forma gradual.
+@Entity
+@DiscriminatorValue("FAST")
 public class FastHorse extends Horse {
 
+    @Column(name = "type_value", nullable = false)
     private double speedBoost;
 
     //Constructor por defecto.

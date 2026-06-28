@@ -1,10 +1,16 @@
 package horses;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import schemas.Horse;
 
 //Caballo de resistencia: pierde energia mas lento y mantiene mejor el ritmo al cansarse.
+@Entity
+@DiscriminatorValue("ENDURANCE")
 public class EnduranceHorse extends Horse {
 
+    @Column(name = "type_value", nullable = false)
     private double staminaBonus;
 
     //Constructor por defecto.

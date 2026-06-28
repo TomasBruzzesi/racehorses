@@ -28,7 +28,7 @@ public class HorseController {
     //Método para cargar el catalogo de caballos desde la base de datos.
     public void loadHorses() {
         HorseDAO horseDAO = new HorseDAO();
-        horseDAO.seedDefaultsIfEmpty();
+        horseDAO.seedDefaults();
         horses.clear();
         horses.addAll(horseDAO.findAll());
     }

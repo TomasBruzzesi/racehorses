@@ -1,13 +1,35 @@
 package schemas;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 //Representa un jugador que participa en carreras de caballos.
+@Entity
+@Table(name = "players")
 public class Player {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(nullable = false, unique = true, length = 150)
     private String email;
+
+    @Column(nullable = false)
     private int score;
-    private Integer selectedHorseId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "selected_horse_id")
     private Horse selectedHorse;
 
     //Constructor por defecto.
@@ -47,12 +69,10 @@ public class Player {
 
     //Método para obtener el id del caballo seleccionado.
     public Integer getSelectedHorseId() {
-        return selectedHorseId;
-    }
-
-    //Método para establecer el id del caballo seleccionado.
-    public void setSelectedHorseId(Integer selectedHorseId) {
-        this.selectedHorseId = selectedHorseId;
+        if (selectedHorse == null) {
+            return null;
+        }
+        return selectedHorse.getId();
     }
 
     //Método para obtener el id del jugador.

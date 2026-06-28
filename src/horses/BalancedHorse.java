@@ -1,10 +1,16 @@
 package horses;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import schemas.Horse;
 
 //Caballo equilibrado: ritmo constante y desgaste moderado.
+@Entity
+@DiscriminatorValue("BALANCED")
 public class BalancedHorse extends Horse {
 
+    @Column(name = "type_value", nullable = false)
     private double balanceFactor;
 
     //Constructor por defecto.
